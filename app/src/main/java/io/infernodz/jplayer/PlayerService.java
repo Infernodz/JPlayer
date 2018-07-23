@@ -11,6 +11,7 @@ import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class PlayerService extends MediaBrowserServiceCompat {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d(TAG, "onCreate");
 
         mSession = new MediaSessionCompat(this, TAG);
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
@@ -58,10 +61,14 @@ public class PlayerService extends MediaBrowserServiceCompat {
             if (action != null) {
                 switch(action) {
                     case CMD_PLAY:
+                        Log.d(TAG, CMD_PLAY);
                         break;
                     case CMD_PAUSE:
+                        Log.d(TAG, CMD_PAUSE);
                         break;
                     case CMD_STOP:
+                        Log.d(TAG, CMD_STOP);
+                        stopSelf();
                         break;
                     default:
                         // TODO: почему stopSelf() а не stop с освобождением ресурсов
@@ -75,6 +82,13 @@ public class PlayerService extends MediaBrowserServiceCompat {
             stopSelf();
         }
         return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSession.release();
+        Log.d(TAG, "onDestroy");
     }
 
     @Nullable
@@ -104,6 +118,7 @@ public class PlayerService extends MediaBrowserServiceCompat {
          */
         @Override
         public void onPlay() {
+            Log.d(TAG, "onPlay");
             Intent intent = new Intent(mContext, PlayerService.class);
             intent.setAction(CMD_PLAY);
             mContext.startService(intent);
@@ -114,6 +129,7 @@ public class PlayerService extends MediaBrowserServiceCompat {
          */
         @Override
         public void onPause() {
+            Log.d(TAG, "onPause");
             Intent intent = new Intent(mContext, PlayerService.class);
             intent.setAction(CMD_PAUSE);
             mContext.startService(intent);
@@ -124,6 +140,7 @@ public class PlayerService extends MediaBrowserServiceCompat {
          */
         @Override
         public void onStop() {
+            Log.d(TAG, "onStop");
             Intent intent = new Intent(mContext, PlayerService.class);
             intent.setAction(CMD_STOP);
             mContext.startService(intent);
