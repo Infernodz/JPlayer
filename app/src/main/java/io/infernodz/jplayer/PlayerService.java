@@ -18,7 +18,7 @@ public class PlayerService extends MediaBrowserServiceCompat {
 
     private static final String TAG = PlayerService.class.getCanonicalName();
 
-    // Service Commands
+    /** Service commands **/
     private static final String CMD_PLAY = "cmd_play";
     private static final String CMD_PAUSE = "cmd_pause";
     private static final String CMD_STOP = "cmd_stop";
@@ -88,6 +88,9 @@ public class PlayerService extends MediaBrowserServiceCompat {
 
     }
 
+    /**
+     * Callbacks for media session to handle requests for managing playback from media controllers
+     */
     private final static class JPlayerMediaSessionCallback extends MediaSessionCompat.Callback {
 
         private final Context mContext;
@@ -96,19 +99,34 @@ public class PlayerService extends MediaBrowserServiceCompat {
             mContext = context;
         }
 
+        /**
+         * Handle requests to begin playback
+         */
         @Override
         public void onPlay() {
-
+            Intent intent = new Intent(mContext, PlayerService.class);
+            intent.setAction(CMD_PLAY);
+            mContext.startService(intent);
         }
 
+        /**
+         * Handle requests to pause playback
+         */
         @Override
         public void onPause() {
-
+            Intent intent = new Intent(mContext, PlayerService.class);
+            intent.setAction(CMD_PAUSE);
+            mContext.startService(intent);
         }
 
+        /**
+         * Handle requests to stop playback
+         */
         @Override
         public void onStop() {
-
+            Intent intent = new Intent(mContext, PlayerService.class);
+            intent.setAction(CMD_STOP);
+            mContext.startService(intent);
         }
     }
 }
